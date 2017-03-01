@@ -1,7 +1,9 @@
+%global sbindir /sbin
+
 Summary:   Management framework for resolv.conf
 Name:      openresolv
 Version:   3.4.1
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   BSD
 Group:     System Environment/Base
 URL:       http://roy.marples.name/projects/openresolv
@@ -21,7 +23,8 @@ Please read resolvconf(8) and resolvconf.conf(5) for detailed instructions.
 %patch0 -p1 -b .service-status-quiet
 
 %build
-%configure --sbindir=/sbin
+%configure \
+  --sbindir=%{sbindir}
 make
 
 %install
@@ -31,17 +34,20 @@ make install DESTDIR=%{buildroot}
 %defattr(-,root,root,-)
 %doc README
 %config(noreplace) %{_sysconfdir}/resolvconf.conf
+%dir %{_libexecdir}/resolvconf
 %attr(0755,root,root) %{_libexecdir}/resolvconf/dnsmasq
 %attr(0755,root,root) %{_libexecdir}/resolvconf/libc
 %attr(0755,root,root) %{_libexecdir}/resolvconf/named
 %attr(0755,root,root) %{_libexecdir}/resolvconf/pdnsd
 %attr(0755,root,root) %{_libexecdir}/resolvconf/unbound
-%attr(0755,root,root) /sbin/resolvconf
+%attr(0755,root,root) %{sbindir}/resolvconf
 %{_mandir}/man5/resolvconf.conf.5.gz
 %{_mandir}/man8/resolvconf.8.gz
 
 
 %changelog
+* Fri Jan 21 2011  Jiri Popelka <jpopelka@redhat.com> - 3.4.1-2
+- Package review fixes (#668153).
 
 * Mon Jan 03 2011  Jiri Popelka <jpopelka@redhat.com> - 3.4.1-1
 - Initial srpm.
